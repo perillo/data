@@ -39,12 +39,7 @@ func newGopathLocator() Locator {
 func (l *gopathLocator) Locate(modpath string) (Loader, error) {
 	fl, err := l.locate(modpath)
 	if err != nil {
-		err := &Error{
-			Locator: l,
-			Err:     err,
-		}
-
-		return nil, err
+		return nil, mkerr(l, err)
 	}
 
 	return fl, nil

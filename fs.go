@@ -25,13 +25,7 @@ type fsLoader struct {
 func (l *fsLoader) Load(path string) (File, error) {
 	fl, err := l.load(path)
 	if err != nil {
-		err := &Error{
-			Locator: l.lc,
-			Loader:  l,
-			Err:     err,
-		}
-
-		return nil, err
+		return nil, mkerr(l.lc, l, err)
 	}
 
 	return fl, nil
@@ -85,15 +79,7 @@ func (f *fsFile) Lstat() (os.FileInfo, error) {
 
 	fi, err := os.Lstat(path)
 	if err != nil {
-		err := &Error{
-			Locator: f.lc,
-			Loader:  f.ld,
-			File:    f,
-			Op:      "lstat",
-			Err:     err,
-		}
-
-		return nil, err
+		return nil, mkerr(f.lc, f.ld, f, "lstat", err)
 	}
 
 	return fi, nil
@@ -106,15 +92,7 @@ func (f *fsFile) Open() (io.ReadCloser, error) {
 	// TODO(mperillo): Check that the file is a regular file, in Open.
 	rc, err := os.Open(path)
 	if err != nil {
-		err := &Error{
-			Locator: f.lc,
-			Loader:  f.ld,
-			File:    f,
-			Op:      "open",
-			Err:     err,
-		}
-
-		return nil, err
+		return nil, mkerr(f.lc, f.ld, f, "open", err)
 	}
 
 	return rc, nil
