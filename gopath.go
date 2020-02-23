@@ -58,12 +58,13 @@ func (l *gopathLocator) locate(modpath string) (Loader, error) {
 		if isDir(dirpath) {
 			// It is responsibility of Loader to report an error if the data
 			// directory does not exists.
-			l := &fsLoader{
+			lf := &fsLoader{
+				lc:   l,
 				mod:  mod,
 				root: filepath.Join(dirpath, "data"),
 			}
 
-			return l, nil
+			return lf, nil
 		}
 
 	}
