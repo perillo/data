@@ -38,6 +38,11 @@ func (l *fsLoader) Load(path string) (File, error) {
 	return file, nil
 }
 
+// Module implements the Loader interface.
+func (l *fsLoader) Module() *Module {
+	return l.mod
+}
+
 // fsFile represents a file on the local filesystem.
 type fsFile struct {
 	root string // absolute path to the module data directory

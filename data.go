@@ -31,6 +31,9 @@ type Loader interface {
 	//
 	// path must be a relative path, without the "data/" prefix.
 	Load(path string) (File, error)
+
+	// Module returns the module the loader is associated with.
+	Module() *Module
 }
 
 // File represents a module data file.
