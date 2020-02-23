@@ -66,6 +66,11 @@ type fsFile struct {
 	path string // path to the data file, relative to the module data directory
 }
 
+// Name implements the File interface.
+func (f *fsFile) Name() string {
+	return f.path
+}
+
 // Path implements the File interface.
 func (f *fsFile) Path() string {
 	return filepath.Join(f.root, f.path)

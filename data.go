@@ -38,6 +38,9 @@ type Loader interface {
 
 // File represents a module data file.
 type File interface {
+	// Name return the file name, relative to the data directory.
+	Name() string
+
 	// Path returns the absolute path to the file.
 	//
 	// If the file is embedded, Path will return an empty string.
