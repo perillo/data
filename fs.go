@@ -25,10 +25,13 @@ type fsLoader struct {
 func (l *fsLoader) Load(path string) (File, error) {
 	fl, err := l.load(path)
 	if err != nil {
-		lc := l.lc.Name()
-		ld := l.mod
+		err := &Error{
+			Locator: l.lc,
+			Loader:  l,
+			Err:     err,
+		}
 
-		return nil, fmt.Errorf("data: %s: %s: load: %v", lc, ld, err)
+		return nil, err
 	}
 
 	return fl, nil
@@ -82,10 +85,15 @@ func (f *fsFile) Lstat() (os.FileInfo, error) {
 
 	fi, err := os.Lstat(path)
 	if err != nil {
-		lc := f.lc.Name()
-		ld := f.ld.Module()
+		err := &Error{
+			Locator: f.lc,
+			Loader:  f.ld,
+			File:    f,
+			Op:      "lstat",
+			Err:     err,
+		}
 
-		return nil, fmt.Errorf("data: %s: %s: lstat %s: %v", lc, ld, f.path, err)
+		return nil, err
 	}
 
 	return fi, nil
@@ -98,10 +106,15 @@ func (f *fsFile) Open() (io.ReadCloser, error) {
 	// TODO(mperillo): Check that the file is a regular file, in Open.
 	rc, err := os.Open(path)
 	if err != nil {
-		lc := f.lc.Name()
-		ld := f.ld.Module()
+		err := &Error{
+			Locator: f.lc,
+			Loader:  f.ld,
+			File:    f,
+			Op:      "open",
+			Err:     err,
+		}
 
-		return nil, fmt.Errorf("data: %s: %s: open %s: %v", lc, ld, f.path, err)
+		return nil, err
 	}
 
 	return rc, nil

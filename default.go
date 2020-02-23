@@ -110,7 +110,12 @@ type nullLocator struct {
 
 // Locate implements the Locator interface.
 func (l *nullLocator) Locate(modpath string) (Loader, error) {
-	return nil, fmt.Errorf("data: %s: locate: %v", l.Name(), l.err)
+	err := &Error{
+		Locator: l,
+		Err:     l.err,
+	}
+
+	return nil, err
 }
 
 // Name implements the Locator interface.

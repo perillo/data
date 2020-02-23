@@ -39,7 +39,12 @@ func newGopathLocator() Locator {
 func (l *gopathLocator) Locate(modpath string) (Loader, error) {
 	fl, err := l.locate(modpath)
 	if err != nil {
-		return nil, fmt.Errorf("data: %s: locate: %v", l.Name(), err)
+		err := &Error{
+			Locator: l,
+			Err:     err,
+		}
+
+		return nil, err
 	}
 
 	return fl, nil
