@@ -66,7 +66,7 @@ type File interface {
 //  5. The "null" locator
 var DefaultLocator Locator
 
-// Locate returns the loader for the main module using the default locator.
+// Locate returns the loader for the main module, using the default locator.
 func Locate() (Loader, error) {
 	if DefaultLocator.Name() == "null" {
 		// Avoid accessing buildInfo that can be nil.
@@ -75,6 +75,19 @@ func Locate() (Loader, error) {
 	modpath := buildInfo.Main.Path
 
 	return DefaultLocator.Locate(modpath)
+}
+
+// Load returns the file associated at path for the main module, using the
+// default locator.
+//
+// path must be a relative path, without the "data/" prefix.
+func Load(path string) (File, error) {
+	l, err := Locate()
+	if err != nil {
+		return nil, err
+	}
+
+	return l.Load(path)
 }
 
 func init() {
