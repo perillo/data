@@ -67,13 +67,7 @@ func fromDebug(m *debug.Module) Module {
 func (m *Module) String() string {
 	s := m.Path
 	if m.Version != "" {
-		s += " " + m.Version
-	}
-	if m.Replace != nil {
-		s += " => " + m.Replace.Path
-		if m.Replace.Version != "" {
-			s += " " + m.Replace.Version
-		}
+		s += "@" + m.Version
 	}
 
 	return s

@@ -27,9 +27,11 @@ func defaultLocator() Locator {
 
 	// Installed mode.  Determine if the data is in the user data directory or
 	// in the module cache.
-	// TODO(mperillo): Implement the "fs:user" and "fs:modcache" locators.
+	// TODO(mperillo): Implement the "fs:user" locator.
+	return LocatorByName("fs:modcache")
+
 	return &nullLocator{
-		err: errors.New("only the \"fs:gopath\" locator is implemented"),
+		err: errors.New("no locator is available"),
 	}
 }
 

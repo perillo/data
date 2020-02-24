@@ -117,8 +117,10 @@ func init() {
 	info = bi
 
 	// Initialize the supported locators.
-	locators = make(map[string]Locator, 1)
-	locators["fs:gopath"] = newGopathLocator()
+	locators = map[string]Locator{
+		"fs:gopath":   newGopathLocator(),
+		"fs:modcache": newModcacheLocator(),
+	}
 }
 
 func init() {
