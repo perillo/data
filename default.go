@@ -19,14 +19,19 @@ type Module struct {
 }
 
 // fromDebug converts the module from debug.Module to Module.
-func fromDebug(m *debug.Module) *Module {
-	mod := &Module{
+func fromDebug(m *debug.Module) Module {
+	mod := Module{
 		Path:    m.Path,
 		Version: m.Version,
 		Sum:     m.Sum,
 	}
 	if mod.Replace != nil {
-		mod.Replace = fromDebug(m.Replace)
+		// Replace is not recursive.
+		mod.Replace = &Module{
+			Path:    m.Replace.Path,
+			Version: m.Replace.Version,
+			Sum:     m.Replace.Sum,
+		}
 	}
 
 	return mod
@@ -48,21 +53,21 @@ func (m *Module) String() string {
 	return s
 }
 
-// buildInfo stores the value returned by ReadBuildInfo.  It can be nil.
-var buildInfo *debug.BuildInfo
+// info stores the value returned by readBuildInfo.  It can be nil.
+var info *buildInfo
 
 // defaultLocator returns the default locator as specified in the
 // documentation.
 func defaultLocator() Locator {
 	// Read the build info to determine if this executable was installed with
 	// go get.
-	bi, ok := debug.ReadBuildInfo()
+	bi, ok := readBuildInfo()
 	if !ok {
 		return &nullLocator{
 			err: errors.New("build info is not available"),
 		}
 	}
-	buildInfo = bi // cache the build info for later use
+	info = bi // cache the build info for later use
 
 	if bi.Main.Version == "(devel)" {
 		// Development mode, use the "fs:gopath" locator.  The implementation
@@ -82,22 +87,21 @@ func defaultLocator() Locator {
 // buildInfo is not null.
 func find(modpath string) (*Module, error) {
 	// TODO(mperillo): Use a module cache in find.
-	if modpath == buildInfo.Main.Path {
-		// Note that BuildInfo.Main is not a pointer, unlike BuildInfo.Deps.
-		return fromDebug(&buildInfo.Main), nil
+	if modpath == info.Main.Path {
+		return &info.Main, nil
 	}
 
 	// TODO(mperillo): Decide what to do if there are multiple versions of the
 	// same module.  Currently we return the first version found.
-	for _, mod := range buildInfo.Deps {
+	for _, mod := range info.Deps {
 		if mod.Path != modpath {
 			continue
 		}
 		if mod.Replace != nil {
-			return fromDebug(mod.Replace), nil
+			return mod.Replace, nil
 		}
 
-		return fromDebug(mod), nil
+		return &mod, nil
 	}
 
 	return nil, fmt.Errorf("module %s is not an active module", modpath)

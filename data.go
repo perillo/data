@@ -72,7 +72,7 @@ func Locate() (Loader, error) {
 		// Avoid accessing buildInfo that can be nil.
 		return DefaultLocator.Locate("")
 	}
-	modpath := buildInfo.Main.Path
+	modpath := info.Main.Path
 
 	return DefaultLocator.Locate(modpath)
 }
