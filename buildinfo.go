@@ -32,3 +32,46 @@ func readBuildInfo() (*buildInfo, bool) {
 
 	return info, true
 }
+
+// Module represents a module.
+type Module struct {
+	Path    string  // module path
+	Version string  // module version
+	Sum     string  // checksum
+	Replace *Module // replaced by this module
+}
+
+// fromDebug converts the module from debug.Module to Module.
+func fromDebug(m *debug.Module) Module {
+	mod := Module{
+		Path:    m.Path,
+		Version: m.Version,
+		Sum:     m.Sum,
+	}
+	if mod.Replace != nil {
+		// Replace is not recursive.
+		mod.Replace = &Module{
+			Path:    m.Replace.Path,
+			Version: m.Replace.Version,
+			Sum:     m.Replace.Sum,
+		}
+	}
+
+	return mod
+}
+
+// String implements the Stringer interface.
+func (m *Module) String() string {
+	s := m.Path
+	if m.Version != "" {
+		s += " " + m.Version
+	}
+	if m.Replace != nil {
+		s += " => " + m.Replace.Path
+		if m.Replace.Version != "" {
+			s += " " + m.Replace.Version
+		}
+	}
+
+	return s
+}
