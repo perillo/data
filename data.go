@@ -91,5 +91,14 @@ func Load(path string) (File, error) {
 }
 
 func init() {
+	// Ensure the global info variable is initialized before everything else.
+	bi, ok := readBuildInfo()
+	if !ok {
+		return
+	}
+	info = bi
+}
+
+func init() {
 	DefaultLocator = defaultLocator()
 }

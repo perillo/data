@@ -6,6 +6,9 @@ package data
 
 import "runtime/debug"
 
+// info stores the value returned by readBuildInfo.  It can be nil.
+var info *buildInfo
+
 // buildInfo represents the build information read from the running binary.
 type buildInfo struct {
 	Path string   // The main package path

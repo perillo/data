@@ -9,23 +9,18 @@ import (
 	"fmt"
 )
 
-// info stores the value returned by readBuildInfo.  It can be nil.
-var info *buildInfo
-
 // defaultLocator returns the default locator as specified in the
 // documentation.
 func defaultLocator() Locator {
-	// Read the build info to determine if this executable was installed with
+	// Check the build info to determine if this executable was installed with
 	// go get.
-	bi, ok := readBuildInfo()
-	if !ok {
+	if info == nil {
 		return &nullLocator{
 			err: errors.New("build info is not available"),
 		}
 	}
-	info = bi // cache the build info for later use
 
-	if bi.Main.Version == "(devel)" {
+	if info.Main.Version == "(devel)" {
 		// Development mode, use the "fs:gopath" locator.  The implementation
 		// assumes that Main.Path is in $GOPATH.
 		return newGopathLocator()
