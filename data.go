@@ -66,6 +66,9 @@ type File interface {
 //  5. The "null" locator
 var DefaultLocator Locator
 
+// locators is a map with available locators.
+var locators map[string]Locator
+
 // Locate returns the loader for the main module, using the default locator.
 func Locate() (Loader, error) {
 	if DefaultLocator.Name() == "null" {
@@ -75,6 +78,22 @@ func Locate() (Loader, error) {
 	modpath := info.Main.Path
 
 	return DefaultLocator.Locate(modpath)
+}
+
+// LocatorByName returns the locator by its name, or nil if not available.
+//
+// LocatorByName may return the "null" locator, if the requested locator is not
+// usable on the host system, e.g. if the GOPATH environment variable is not
+// defined for the "fs:gopath" locator.
+//
+// Supported locators are "fs:gopath", "fs:modcache" and "fs:user".
+func LocatorByName(name string) Locator {
+	l, ok := locators[name]
+	if !ok {
+		return nil
+	}
+
+	return l
 }
 
 // Load returns the file associated at path for the main module, using the
@@ -97,6 +116,10 @@ func init() {
 		return
 	}
 	info = bi
+
+	// Initialize the supported locators.
+	locators = make(map[string]Locator, 1)
+	locators["fs:gopath"] = newGopathLocator()
 }
 
 func init() {

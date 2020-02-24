@@ -21,9 +21,8 @@ func defaultLocator() Locator {
 	}
 
 	if info.Main.Version == "(devel)" {
-		// Development mode, use the "fs:gopath" locator.  The implementation
-		// assumes that Main.Path is in $GOPATH.
-		return newGopathLocator()
+		// Development mode, try to use the "fs:gopath" locator.
+		return LocatorByName("fs:gopath")
 	}
 
 	// Installed mode.  Determine if the data is in the user data directory or
