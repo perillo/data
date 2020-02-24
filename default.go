@@ -34,7 +34,7 @@ func defaultLocator() Locator {
 }
 
 // find finds the module named by modpath in the build info.  find assumes that
-// buildInfo is not null.
+// info is not nil.
 func find(modpath string) (*Module, error) {
 	// TODO(mperillo): Use a module cache in find.
 	if modpath == info.Main.Path {
