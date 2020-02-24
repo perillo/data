@@ -27,7 +27,7 @@ type Locator interface {
 
 // Loader is responsible for loading a module data file.
 type Loader interface {
-	// Load returns the file associated at path, for the main module.
+	// Load returns the file associated at path.
 	//
 	// path must be a relative path, without the "data/" prefix.
 	Load(path string) (File, error)
