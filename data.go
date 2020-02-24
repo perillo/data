@@ -71,13 +71,12 @@ var locators map[string]Locator
 
 // Locate returns the loader for the main module, using the default locator.
 func Locate() (Loader, error) {
-	if DefaultLocator.Name() == "null" {
-		// Avoid accessing buildInfo that can be nil.
+	if info == nil {
+		// The DefaultLocator is "null", if build info is not available.
 		return DefaultLocator.Locate("")
 	}
-	modpath := info.Main.Path
 
-	return DefaultLocator.Locate(modpath)
+	return DefaultLocator.Locate(info.Main.Path)
 }
 
 // LocatorByName returns the locator by its name, or nil if not available.
