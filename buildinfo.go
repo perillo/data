@@ -4,7 +4,10 @@
 
 package data
 
-import "runtime/debug"
+import (
+	"runtime/debug"
+	"strings"
+)
 
 // info stores the value returned by readBuildInfo.  It can be nil.
 var info *buildInfo
@@ -61,6 +64,18 @@ func fromDebug(m *debug.Module) Module {
 	}
 
 	return mod
+}
+
+// FlatPath returns the full versioned path with slashes replaced by dots.
+func (m *Module) FlatPath() string {
+	// TODO(mperillo): Implement FlatPath to return a Java package like path.
+	// e.g. github.com/perillo/data => com.github.perillo.data.
+	path := strings.Replace(m.Path, "/", ".", -1)
+	if m.Version != "" {
+		path += "@" + m.Version
+	}
+
+	return path
 }
 
 // String implements the Stringer interface.

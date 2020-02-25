@@ -120,6 +120,7 @@ func init() {
 	locators = map[string]Locator{
 		"fs:gopath":   newGopathLocator(),
 		"fs:modcache": newModcacheLocator(),
+		"fs:user":     newUserLocator(),
 	}
 }
 
