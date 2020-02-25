@@ -79,13 +79,12 @@ func (l gopathLocator) Name() string {
 
 // gopath returns the value of the GOPATH environment variable.
 func gopath() (string, error) {
-	// Use go env to get GOPATH.
-	stdout, err := gocmd.Invoke("env", "GOPATH")
+	value, err := gocmd.Getenv("GOPATH")
 	if err != nil {
 		return "", fmt.Errorf("GOPATH is not available: %v", err)
 	}
 
-	// If there is no error, gopath should not be empty.  But each directory in
+	// If there is no error, value should not be empty.  But each directory in
 	// the list may not exist.
-	return string(stdout), nil
+	return value, nil
 }
