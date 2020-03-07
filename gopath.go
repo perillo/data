@@ -37,12 +37,12 @@ func newGopathLocator() Locator {
 
 // Locate implements the Locator interface.
 func (l *gopathLocator) Locate(modpath string) (Loader, error) {
-	fl, err := l.locate(modpath)
+	ld, err := l.locate(modpath)
 	if err != nil {
 		return nil, mkerr(l, err)
 	}
 
-	return fl, nil
+	return ld, nil
 }
 
 func (l *gopathLocator) locate(modpath string) (Loader, error) {
@@ -58,13 +58,13 @@ func (l *gopathLocator) locate(modpath string) (Loader, error) {
 		if isDir(dirpath) {
 			// It is responsibility of Loader to report an error if the data
 			// directory does not exists.
-			lf := &fsLoader{
+			ld := &fsLoader{
 				lc:   l,
 				mod:  mod,
 				root: filepath.Join(dirpath, "data"),
 			}
 
-			return lf, nil
+			return ld, nil
 		}
 
 	}

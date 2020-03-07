@@ -23,12 +23,12 @@ type fsLoader struct {
 
 // Load implements the Loader interface.
 func (l *fsLoader) Load(path string) (File, error) {
-	fl, err := l.load(path)
+	f, err := l.load(path)
 	if err != nil {
 		return nil, mkerr(l.lc, l, err)
 	}
 
-	return fl, nil
+	return f, nil
 }
 
 func (l *fsLoader) load(path string) (File, error) {
