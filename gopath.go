@@ -30,9 +30,18 @@ func newGopathLocator() Locator {
 		}
 	}
 
-	return &gopathLocator{
+	l := &gopathLocator{
 		pathList: filepath.SplitList(gopath),
 	}
+
+	// Check if the main module is in $GOPATH.
+	if _, err := l.locate(info.Main.Path); err != nil {
+		return &nullLocator{
+			err: fmt.Errorf("main module %s is not in $GOPATH", &info.Main),
+		}
+	}
+
+	return l
 }
 
 // Locate implements the Locator interface.
