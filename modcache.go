@@ -31,16 +31,18 @@ func newModcacheLocator() Locator {
 		}
 	}
 
-	// Check if the main module is cached.
-	if !isCached(gocache, &info.Main) {
+	l := &modcacheLocator{
+		path: gocache,
+	}
+
+	// Check if the main module is in the module cache.
+	if _, err := l.locate(info.Main.Path); err != nil {
 		return &nullLocator{
-			err: fmt.Errorf("main module %s is not in the cache", &info.Main),
+			err: fmt.Errorf("main module %s is not in the module cache", &info.Main),
 		}
 	}
 
-	return &modcacheLocator{
-		path: gocache,
-	}
+	return l
 }
 
 // Locate implements the Locator interface.
@@ -99,12 +101,4 @@ func gocache() (string, error) {
 	}
 
 	return path, nil
-}
-
-// isCached returns true if the module, at the specified version, is available
-// in the module cache at gocache.
-func isCached(gocache string, mod *Module) bool {
-	path := filepath.Join(gocache, mod.String())
-
-	return isDir(path)
 }
