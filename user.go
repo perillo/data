@@ -31,17 +31,19 @@ func newUserLocator() Locator {
 		}
 	}
 
-	// Check if the app is in the user data directory.
-	if !isInUserData(godata) {
+	l := &userLocator{
+		path: godata,
+	}
+
+	// Check if the main module is in the user data directory.
+	if _, err := l.locate(info.Main.Path); err != nil {
 		return &nullLocator{
-			err: fmt.Errorf("application %s is not in the user data directory",
-				AppName()),
+			err: fmt.Errorf("main module %s is not in the user data directory",
+				&info.Main),
 		}
 	}
 
-	return &userLocator{
-		path: godata,
-	}
+	return l
 }
 
 // Locate implements the Locator interface.
@@ -99,11 +101,4 @@ func godata() (string, error) {
 	}
 
 	return UserDataDir()
-}
-
-// isInUserData returns true if the application is in the user data directory.
-func isInUserData(godata string) bool {
-	path := filepath.Join(godata, AppName())
-
-	return isDir(path)
 }
